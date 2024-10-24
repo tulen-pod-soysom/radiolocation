@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/aleksey/workspace/radiolocation/build",
+  "command": "/usr/bin/c++   -O3 -DNDEBUG -o CMakeFiles/radiolocation.dir/1.cpp.o -c /home/aleksey/workspace/radiolocation/1.cpp",
+  "file": "/home/aleksey/workspace/radiolocation/1.cpp",
+  "output": "CMakeFiles/radiolocation.dir/1.cpp.o"
+}
+]
