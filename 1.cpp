@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "hooke_jeeves.hpp"
+#include "NewMHJ.hpp"
 
 
 constexpr double speed_of_light = 2.99792458e8;
@@ -35,7 +36,7 @@ auto doppler_shift(T frequency, Vec receiver_vel, Vec emitter_vel,
 
 template <typename T> auto sqr(T a) { return a * a; }
 
-auto functional(std::vector<double> &pos, std::vector<double> &rec1_pos,
+auto functional(std::vector<double> pos, std::vector<double> &rec1_pos,
                 std::vector<double> &rec2_pos, std::vector<double> &rec3_pos,
                 std::vector<double> &rec4_pos, std::vector<double> &rec1_vel,
                 std::vector<double> &rec2_vel, std::vector<double> &rec3_vel,
@@ -188,14 +189,23 @@ int main() {
   auto &r3 = receiver[2];
   auto &r4 = receiver[3];
 
-  auto p = hooke_jeeves_optimizer_simple(
-      [&](std::vector<double> pos) {
-        return functional(pos,
-         r1.pos, r2.pos, r3.pos, r4.pos, 
-         r1.vel, r2.vel,r3.vel, r4.vel,
-                          std::vector{f2 - f1, f3 - f1, f4 - f1}, f1);
-      },
-      /*r1.pos*/std::vector{0.0, 0.0, 0.0}, 3,1e-9);
+  // auto p = hooke_jeeves_optimizer_simple(
+  //     [&](std::vector<double> pos) {
+  //       return functional(pos,
+  //        r1.pos, r2.pos, r3.pos, r4.pos,
+  //        r1.vel, r2.vel,r3.vel, r4.vel,
+  //                         std::vector{f2 - f1, f3 - f1, f4 - f1}, f1);
+  //     },
+  //     /*r1.pos*/std::vector{0.0, 0.0, 0.0}, 3,1e-9);
+
+  std::vector<float> p(3);
+
+  NewMHJ(3,p.data(),[&](float pos[3]) {
+               return functional(std::vector<double>(pos,pos+3),
+                r1.pos, r2.pos, r3.pos, r4.pos,
+                r1.vel, r2.vel,r3.vel, r4.vel,
+                                 std::vector{f2 - f1, f3 - f1, f4 - f1}, f1);});
+
 
   std::cout << "result:" << p[0] << ' ' << p[1] << ' ' << p[2] << std::endl;
 
